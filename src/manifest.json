@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "FormFill",
+  "version": "0.1",
+
+  "description": "Automatically fills forms with dummy data.",
+
+  "icons": {
+    "48": "icons/form-fill-48.png"
+  },
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/form-fill-48.png",
+    "default_title": "FormFill",
+    "default_popup": "popup/popup.html"
+  }
+}
