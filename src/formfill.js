@@ -16,3 +16,5 @@ FormFill.fillElement = function(element) {
 };
 
 FormFill.fill();
+
+console.log(faker)
