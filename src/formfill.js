@@ -26,8 +26,8 @@ function fillForm(form) {
  * @returns {boolean}
  */
 function shouldFillElement(element) {
-    // Skip hidden form elements.
-    if (element.type == 'hidden') {
+    // Skip hidden form elements and submit buttons.
+    if (['hidden', 'submit'].includes(element.type)) {
         return false;
     }
     // Skip disabled elements.
