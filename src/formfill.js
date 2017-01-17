@@ -1,3 +1,5 @@
+var fakerMap;
+
 /**
  * Main function. Fetches each form element and fills it.
  */
@@ -42,16 +44,22 @@ function shouldFillElement(element) {
 /**
  * Fills a single element.
  *
+ * @todo:
+ * make sure HTML validation is met. E.g. don't exceed an
+ * element's maxlength.
+ *
  * @param element
  */
 function fillElement(element) {
     switch(element.type) {
         case 'select-one':
         case 'select-multiple':
+        case 'radio':
+        case 'ceckbox':
+        case 'range':
             // @todo:
-            // should use one or more of possible
-            // the possible options in stead of a
-            // faker method.
+            // should use one or more of the possible options
+            // in stead of a faker method.
             return;
         default:
             element.value = guessFakerMethod(element)();
@@ -66,12 +74,60 @@ function fillElement(element) {
  * @returns {*}
  */
 function guessFakerMethod(element) {
-    if (element.type == 'email') {
-        return faker.internet.email;
+    // First, check if the type is something obvious.
+    if (guess = guessFromType(element.type)) {
+        return guess;
+    }
+
+    // Next, try to guess using the label.
+    if (guess = guessFromLabel('@todo')) {
+        return guess;
     }
 
     // As a last resort, return a random word.
     return faker.random.word;
+}
+
+/**
+ * Checks if we can get am appropriate method using the
+ * element's type. E.g. type="email" means we'll use
+ * internet.email.
+ *
+ * @todo: add more types.
+ *
+ * @param type
+ * @returns {*}
+ */
+function guessFromType(type) {
+    switch (type) {
+        case 'email':
+            return faker.internet.email;
+        case 'textarea':
+            return faker.lorem.sentence;
+    }
+
+    return false;
+}
+
+/**
+ * Tries to guess the faker method based on the label of
+ * an element.
+ *
+ * @todo: further improve this very basic implementation.
+ *
+ * @param label
+ * @returns {*}
+ */
+function guessFromLabel(label) {
+    for (var [method, group] of getFakerMap()) {
+        // If the label is exactly the same, then this probably is
+        // the correct method.
+        if (method == label) {
+            return faker[group][method];
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -81,7 +137,9 @@ function guessFakerMethod(element) {
  * @returns {Map}
  */
 function getFakerMap() {
-    var fakerMap = new Map();
+    // Poor man's memoization.
+    if (fakerMap) return fakerMap;
+    fakerMap = new Map();
 
     Object.getOwnPropertyNames(faker)
         .filter(function (groupName) {
