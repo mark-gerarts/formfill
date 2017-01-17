@@ -74,4 +74,29 @@ function guessFakerMethod(element) {
     return faker.random.word;
 }
 
+/**
+ * Constructs a map of faker methods. The map keys are methods that
+ * generate data, the value is the group which the method belongs to.
+ *
+ * @returns {Map}
+ */
+function getFakerMap() {
+    var fakerMap = new Map();
+
+    Object.getOwnPropertyNames(faker)
+        .filter(function (groupName) {
+            // We want to exclude methods that don't generate
+            // any data.
+            return !groupName.startsWith('locale');
+        })
+        .forEach(function (groupName) {
+            // Get the methods collected under the given group and add them to the map.
+            Object.getOwnPropertyNames(faker[groupName]).forEach(function(method) {
+                fakerMap.set(method, groupName);
+            });
+    });
+
+    return fakerMap;
+}
+
 fill();
