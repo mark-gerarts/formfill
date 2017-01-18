@@ -104,6 +104,8 @@ function guessFromType(type) {
             return faker.internet.email;
         case 'textarea':
             return faker.lorem.sentence;
+        case 'color':
+            return faker.custom.color;
     }
 
     return false;
@@ -156,5 +158,17 @@ function getFakerMap() {
 
     return fakerMap;
 }
+
+// We'll add a new group to Faker for some custom methods.
+faker.custom = {};
+
+/**
+ * Generates a random hexadecimal color value, prefixed with #.
+ *
+ * @returns {string}
+ */
+faker.custom.color = function() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+};
 
 fill();
