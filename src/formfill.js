@@ -106,6 +106,8 @@ function guessFromType(type) {
             return faker.lorem.sentence;
         case 'color':
             return faker.custom.color;
+        case 'date':
+            return faker.custom.date;
     }
 
     return false;
@@ -159,6 +161,23 @@ function getFakerMap() {
     return fakerMap;
 }
 
+/**
+ * Helper function to leftpad a given word. Adds char to the beginning
+ * of the word until maxLength is reached.
+ *
+ * @param word
+ * @param char
+ * @param maxLength
+ * @returns {*}
+ */
+function leftPad(word, char, maxLength) {
+    if (word.length >= maxLength) {
+        return word;
+    }
+
+    return leftPad(char + word, char, maxLength);
+}
+
 // We'll add a new group to Faker for some custom methods.
 faker.custom = {};
 
@@ -170,5 +189,35 @@ faker.custom = {};
 faker.custom.color = function() {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
 };
+
+/**
+ * Generates a random JS date object.
+ * Ranges from 1970 to currentYear + 20.
+ *
+ * @returns {Date}
+ */
+faker.custom.dateObject = function() {
+    var start =  new Date(1970, 0, 1);
+    var end =  new Date();
+    end.setFullYear(end.getFullYear() + 20);
+
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+};
+
+/**
+ * Generates a random ISO date (YYYY-MM-DD).
+ *
+ * @returns {string}
+ */
+faker.custom.date = function() {
+    var randomDate = faker.custom.dateObject();
+
+    var dateString = randomDate.getFullYear() + '-';
+    dateString += leftPad((randomDate.getMonth() + 1).toString(), '0', 2) + '-';
+    dateString += leftPad((randomDate.getDate().toString()), '0', 2);
+
+    return dateString;
+};
+
 
 fill();
