@@ -1,5 +1,12 @@
+# IDE personal stuff.
 .idea/
 
-# NPM stuffs
+# NPM stuffs.
 npm-debug.log
 node_modules/
+
+# Exclude cljsbuild compilation files.
+target/
+
+# Not including generated files.
+formfill/formfill.js
