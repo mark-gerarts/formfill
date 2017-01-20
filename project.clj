@@ -11,6 +11,6 @@
 
         :compiler {
           :output-to "formfill/formfill.js"
-          :optimizations :whitespace
+          :optimizations :advanced
           :pretty-print true
         }}]})
