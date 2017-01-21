@@ -8,7 +8,7 @@
         :source-paths ["src-cljs"]
         :compiler {
           :output-to "formfill/formfill.js"
-          :foreign-libs [{:file "formfill/lib/faker.min.js"
+          :foreign-libs [{:file "lib/faker.min.js"
                           :provides ["libs.faker"]}]
           :optimizations :simple
           :pretty-print true}}]})
