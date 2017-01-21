@@ -1,4 +1,5 @@
-(ns formfill.core)
+(ns formfill.core
+  (:require [libs.faker :as faker]))
 
 (defn find-forms
   "Finds every form on the page."
