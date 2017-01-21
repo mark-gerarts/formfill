@@ -9,7 +9,13 @@
 (defn fill-form
   "Tries to fill a given form."
   [form]
-  ())
+  (for [input-el (-.elements form)] (fill-element input-el)))
+
+(defn fill-element
+  "Fills a single input element"
+  [input-el]
+  (when (should-fill-element? input-el)
+    (aset input-el "value" (guess-fill-method input-el))))
 
 (defn should-fill-element?
   "Checks if a given input element should be filled. For
@@ -25,4 +31,27 @@
   E.g. an input field with type 'email' should be filled with
   the faker.internet.email function"
   [input-el]
-  ('nil))
+  (or
+   (guess-from-type (-.type input-el))
+   (guess-from-label nil)))
+
+(defn guess-from-type
+  "Guesses the fill method based on the type of an element"
+  [type]
+  (case type
+    "email" faker.internet.email
+    "textarea" faker.lorem.sentence))
+
+(defn guess-from-label
+  "Guesses the fill method based on the label of an element"
+  [label]
+  false)
+
+
+(defn fill
+  "Main function - fills every form"
+  []
+  (.log js/console "Filling forms")
+  (for [form (find-forms)] (fill-form form)))
+
+(fill)
