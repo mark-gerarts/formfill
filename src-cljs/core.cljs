@@ -1,5 +1,6 @@
 (ns formfill.core
-  (:require [libs.faker :as faker]))
+  (:require [libs.faker :as faker]
+            formfill.random))
 
 ;; Makes a Nodelist traversable.
 (extend-type js/NodeList
@@ -31,6 +32,7 @@
   (case type
     "email" faker.internet.email
     "textarea" faker.lorem.sentence
+    "color" formfill.random.hex-color
     nil))
 
 (defn guess-from-label
