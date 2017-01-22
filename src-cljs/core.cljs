@@ -1,21 +1,20 @@
 (ns formfill.core
   (:require [libs.faker :as faker]))
 
+;; Makes a Nodelist traversable.
+(extend-type js/NodeList
+  ISeqable
+  (-seq [array] (array-seq array 0)))
+
+;; Makes an HTMLFormControlsColelction traversable.
+(extend-type js/HTMLFormControlsCollection
+  ISeqable
+  (-seq [array] (array-seq array 0)))
+
 (defn find-forms
   "Finds every form on the page."
   []
   (.querySelectorAll js/document "form"))
-
-(defn fill-form
-  "Tries to fill a given form."
-  [form]
-  (for [input-el (-.elements form)] (fill-element input-el)))
-
-(defn fill-element
-  "Fills a single input element"
-  [input-el]
-  (when (should-fill-element? input-el)
-    (aset input-el "value" (guess-fill-method input-el))))
 
 (defn should-fill-element?
   "Checks if a given input element should be filled. For
@@ -23,8 +22,22 @@
   [input-el]
   (let [excluded-types ["hidden" "submit" "button" "image" "reset"]]
     (not (or
-          (.-disabled input-el)
-          (contains? excluded-types (.-type input-el))))))
+          (aget input-el "disabled")
+          (some #{(aget input-el "type")} excluded-types)))))
+
+(defn guess-from-type
+  "Guesses the fill method based on the type of an element"
+  [type]
+  (case type
+    "email" faker.internet.email
+    "textarea" faker.lorem.sentence
+    nil))
+
+(defn guess-from-label
+  "Guesses the fill method based on the label of an element"
+  [label]
+  ; @todo
+  false)
 
 (defn guess-fill-method
   "Guesses the most appropriate method to fill a form element.
@@ -32,26 +45,26 @@
   the faker.internet.email function"
   [input-el]
   (or
-   (guess-from-type (-.type input-el))
-   (guess-from-label nil)))
+   (guess-from-type (aget input-el "type"))
+   (guess-from-label nil)
+   ; If we can't find an appropriate method, we'll just use
+   ; a random word.
+   faker.random.word))
 
-(defn guess-from-type
-  "Guesses the fill method based on the type of an element"
-  [type]
-  (case type
-    "email" faker.internet.email
-    "textarea" faker.lorem.sentence))
+(defn fill-element
+  "Fills a single input element"
+  [input-el]
+  (when (should-fill-element? input-el)
+    (aset input-el "value" ((guess-fill-method input-el)))))
 
-(defn guess-from-label
-  "Guesses the fill method based on the label of an element"
-  [label]
-  false)
-
+(defn fill-form
+  "Tries to fill a given form."
+  [form]
+  (doseq [input-el (aget form "elements")] (fill-element input-el)))
 
 (defn fill
   "Main function - fills every form"
   []
-  (.log js/console "Filling forms")
-  (for [form (find-forms)] (fill-form form)))
+  (doseq [form (find-forms)] (fill-form form)))
 
 (fill)
