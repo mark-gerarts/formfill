@@ -33,6 +33,7 @@
     "email" faker.internet.email
     "textarea" faker.lorem.sentence
     "color" formfill.random.hex-color
+    "date" formfill.random.date-string
     nil))
 
 (defn guess-from-label
