@@ -38,7 +38,7 @@
 (defn guess-from-label
   "Guesses the fill method based on the label of an element"
   [label]
-  ; @todo
+  ;; @todo
   false)
 
 (defn guess-fill-method
@@ -49,15 +49,23 @@
   (or
    (guess-from-type (aget input-el "type"))
    (guess-from-label nil)
-   ; If we can't find an appropriate method, we'll just use
-   ; a random word.
+   ;; If we can't find an appropriate method, we'll just use
+   ;; a random word.
    faker.random.word))
 
 (defn fill-element
   "Fills a single input element"
   [input-el]
   (when (should-fill-element? input-el)
-    (aset input-el "value" ((guess-fill-method input-el)))))
+    (case (aget input-el "type")
+      ;; @todo: These inputs should chose a random
+      ;; option.
+      ("select-one"
+       "select-multiple"
+       "radio"
+       "checkbox"
+       "range") nil
+       (aset input-el "value" ((guess-fill-method input-el))))))
 
 (defn fill-form
   "Tries to fill a given form."
