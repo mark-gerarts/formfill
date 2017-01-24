@@ -3,7 +3,7 @@
 (defn hex-color
   "Generates a random color, represented as a hexadecimal string"
   []
-  (str "#" (.toString (rand-int 16rFFFFFF) 16)))
+  (str "#" (.toString (.floor js/Math (* (.random js/Math) 16777215)) 16)))
 
 (defn date
   "Generates a JS Date object representing a random date.
