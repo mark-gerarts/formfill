@@ -40,12 +40,11 @@
    faker.random.word))
 
 (defn random-select-option
-  "Retrieves a random option from a select field.
-  @todo."
+  "Retrieves a random option from a select field."
   [select]
   (let [possible-values (aget select "options")
         count (aget possible-values "length")]
-    (nth (possible-values) (.floor js/Math (* count (.random js/Math))))))
+    (aget possible-values (.floor js/Math (* count (.random js/Math))))))
 
 (defn fill-element
   "Fills a single input element"
