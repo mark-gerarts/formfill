@@ -2,14 +2,15 @@
   (:use [formfill.fill :only (fill-form)]))
 
 ;; Make some JS specific list types traversable.
+
 (let [types-to-extend [js/NodeList
                        js/HTMLFormControlsCollection
                        js/HTMLOptionsCollection]]
   (doseq [type types-to-extend]
-    (fn [type]
-      (extend-type type
-        ISeqable
-        (-seq [array] (array-seq array 0))))))
+    ((fn [type]
+       (extend-type type
+         ISeqable
+         (-seq [array] (array-seq array 0)))) type)))
 
 (defn find-forms
   "Finds every form on the page."
