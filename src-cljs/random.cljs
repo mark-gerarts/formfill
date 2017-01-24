@@ -1,7 +1,8 @@
 (ns formfill.random)
 
 (defn hex-color
-  "Generates a random color, represented as a hexadecimal string"
+  "Generates a random color, represented as a hexadecimal string
+  @todo: sometimes generates a <6 digit hex number."
   []
   (str "#" (.toString (.floor js/Math (* (.random js/Math) 16777215)) 16)))
 
