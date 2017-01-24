@@ -2,7 +2,6 @@
   (:require [libs.faker :as faker]
             formfill.random))
 
-
 (defn should-fill-element?
   "Checks if a given input element should be filled. For
   example, we don't want to fill a hidden input."

@@ -1,15 +1,15 @@
 (ns formfill.core
   (:use [formfill.fill :only (fill-form)]))
 
-;; Makes a Nodelist traversable.
-(extend-type js/NodeList
-  ISeqable
-  (-seq [array] (array-seq array 0)))
-
-;; Makes an HTMLFormControlsColelction traversable.
-(extend-type js/HTMLFormControlsCollection
-  ISeqable
-  (-seq [array] (array-seq array 0)))
+;; Make some JS specific list types traversable.
+(let [types-to-extend [js/NodeList
+                       js/HTMLFormControlsCollection
+                       js/HTMLOptionsCollection]]
+  (doseq [type types-to-extend]
+    (fn [type]
+      (extend-type type
+        ISeqable
+        (-seq [array] (array-seq array 0))))))
 
 (defn find-forms
   "Finds every form on the page."
