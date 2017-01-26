@@ -46,19 +46,29 @@
         count (aget possible-values "length")]
     (aget possible-values (.floor js/Math (* count (.random js/Math))))))
 
+(defn fill-select-single
+  "Marks a single option of a select as selected."
+  [select]
+  (aset select "value" (aget (random-select-option select) "value")))
+
+(defn fill-select-multiple
+  "Selects a random few options of a multiselect as selected"
+  [multiselect]
+  (let [rand-amount (.floor js/Math (* (.random js/Math) (aget multiselect "length")))]
+    (dotimes [n rand-amount]
+      (aset (random-select-option multiselect) "selected" "selected"))))
+
 (defn fill-element
   "Fills a single input element"
   [input-el]
   (when (should-fill-element? input-el)
     (case (aget input-el "type")
+      "select-one" (fill-select-single input-el)
+      "select-multiple" (fill-select-multiple input-el)
       ;; @todo: These inputs should chose a random
       ;; option.
-      ("select-one"
-       "select-multiple"
-       "radio"
-       "checkbox"
-       "range") nil
-       (aset input-el "value" ((guess-fill-method input-el))))))
+      ("radio" "checkbox" "range") nil
+      (aset input-el "value" ((guess-fill-method input-el))))))
 
 (defn fill-form
   "Tries to fill a given form."
